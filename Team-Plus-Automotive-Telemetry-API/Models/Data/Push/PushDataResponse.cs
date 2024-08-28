@@ -2,5 +2,6 @@
 {
     public class PushDataResponse
     {
+        public string Count { get; set; }
     }
 }
