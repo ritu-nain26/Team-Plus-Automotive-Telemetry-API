@@ -2,5 +2,6 @@
 {
     public class PullDataResponse
     {
+        public List<string> DataFeed { get; set; }
     }
 }

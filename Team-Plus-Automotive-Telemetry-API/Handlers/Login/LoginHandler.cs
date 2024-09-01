@@ -5,10 +5,6 @@ namespace Team_Plus_Automotive_Telemetry_API.Handlers.Login
 {
     public class LoginHandler : IHandler<LoginRequest, LoginResponse>
     {
-        public LoginHandler()
-        {
-
-        }
         public LoginResponse Handle(LoginRequest request)
         {
             var feedId = EncryptionUtility.GenerateEncryptedNumber(request.VIN);

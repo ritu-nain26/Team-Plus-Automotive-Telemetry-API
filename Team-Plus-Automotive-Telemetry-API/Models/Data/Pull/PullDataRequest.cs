@@ -2,5 +2,7 @@
 {
     public class PullDataRequest
     {
+        public string DeviceId { get; set; }
+        public long Timestamp { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Team_Plus_Automotive_Telemetry_API.Handlers.Data;
+using Team_Plus_Automotive_Telemetry_API.Handlers;
 using Team_Plus_Automotive_Telemetry_API.Models.Data.Pull;
 using Team_Plus_Automotive_Telemetry_API.Models.Data.Push;
 
@@ -10,12 +10,15 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
     public class DataController : ControllerBase
     {
         private readonly ILogger<DataController> _logger;
-        private readonly PushDataHandler _handler;
+        private readonly IHandler<PushDataRequest, PushDataResponse> _handler;
+        private readonly IHandler<PullDataRequest, PullDataResponse> _pullHandler;
 
-        public DataController(ILogger<DataController> logger)
+        public DataController(ILogger<DataController> logger, IHandler<PushDataRequest, PushDataResponse> handler,
+            IHandler<PullDataRequest, PullDataResponse> pullHandler)
         {
             _logger = logger;
-            _handler = new PushDataHandler();
+            _handler = handler;
+            _pullHandler = pullHandler;
         }
 
         // GET: api/push/{deviceId}
@@ -48,9 +51,15 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
         }
 
         [HttpGet("Pull")]
-        public PullDataResponse PullData(PullDataRequest request)
+        public IActionResult PullData(string deviceId, long timeStamp)
         {
-            return new PullDataResponse();
+            var request = new PullDataRequest
+            {
+                DeviceId = deviceId,
+                Timestamp = timeStamp,
+            };
+
+            return Ok(_pullHandler.Handle(request));
         }
     }
 }
