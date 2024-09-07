@@ -1,65 +1,63 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Team_Plus_Automotive_Telemetry_API.Handlers;
-using Team_Plus_Automotive_Telemetry_API.Models.Data.Pull;
-using Team_Plus_Automotive_Telemetry_API.Models.Data.Push;
+using Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch;
+using Team_Plus_Automotive_Telemetry_API.Models.Data.Feed;
+using Team_Plus_Automotive_Telemetry_API.Utility;
 
 namespace Team_Plus_Automotive_Telemetry_API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/data")]
     public class DataController : ControllerBase
     {
         private readonly ILogger<DataController> _logger;
-        private readonly IHandler<PushDataRequest, PushDataResponse> _handler;
-        private readonly IHandler<PullDataRequest, PullDataResponse> _pullHandler;
+        private readonly IHandler<FeedDataRequest, FeedDataResponse> _feedDataHandler;
+        private readonly IHandler<FetchDataRequest, FetchDataResponse> _fetchDataHandler;
 
-        public DataController(ILogger<DataController> logger, IHandler<PushDataRequest, PushDataResponse> handler,
-            IHandler<PullDataRequest, PullDataResponse> pullHandler)
+        public DataController(ILogger<DataController> logger,
+            IHandler<FeedDataRequest, FeedDataResponse> feedDataHandler,
+            IHandler<FetchDataRequest, FetchDataResponse> fetchDataHandler)
         {
             _logger = logger;
-            _handler = handler;
-            _pullHandler = pullHandler;
+            _feedDataHandler = feedDataHandler;
+            _fetchDataHandler = fetchDataHandler;
         }
 
-        // GET: api/push/{deviceId}
-        [HttpGet("{deviceId}")]
-        public IActionResult PushData(string deviceId, [FromQuery] Dictionary<string, string> queryParams)
+        // GET: api/post/{deviceId}
+        [HttpPost("post")]
+        public IActionResult FeedData([FromQuery] string deviceId, [FromQuery] long TS, [FromBody] Dictionary<string, string> queryParams)
         {
-            // Check if timestamp is provided
-            if (!queryParams.ContainsKey("TS"))
+            if (string.IsNullOrEmpty(deviceId))
             {
-                return BadRequest("Timestamp (TS) parameter is required.");
+                return BadRequest(new { result = "failed", error = "deviceId is required" });
             }
 
-            // Try to parse the timestamp
-            if (!long.TryParse(queryParams["TS"], out long timestamp))
+            if (!TimestampToDatetime.IsValid(TS))
             {
-                return BadRequest("Invalid timestamp format.");
+                return BadRequest(new { result = "failed", error = "Invalid timestamp" });
             }
 
-            // Remove timestamp from the queryParams to process remaining telemetry parameters
-            queryParams.Remove("TS");
-
-            var request = new PushDataRequest
+            var request = new FeedDataRequest
             {
                 DeviceId = deviceId,
-                Timestamp = timestamp,
+                Timestamp = TS,
                 Parameters = queryParams
             };
 
-            return Ok(_handler.Handle(request));
+            return Ok(_feedDataHandler.Handle(request));
         }
 
-        [HttpGet("Pull")]
-        public IActionResult PullData(string deviceId, long timeStamp)
+        // GET: api/fetch/{deviceId}/{timeStamp}
+        [HttpGet("fetch")]
+        public IActionResult FetchData([FromQuery] string deviceId, [FromQuery] long timeStamp)
         {
-            var request = new PullDataRequest
+            var request = new FetchDataRequest
             {
                 DeviceId = deviceId,
                 Timestamp = timeStamp,
             };
 
-            return Ok(_pullHandler.Handle(request));
+            return Ok(_fetchDataHandler.Handle(request));
         }
     }
 }

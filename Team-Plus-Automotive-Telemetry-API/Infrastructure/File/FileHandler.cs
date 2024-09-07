@@ -1,52 +1,35 @@
-﻿using Team_Plus_Automotive_Telemetry_API.Models.Data.Pull;
-using Team_Plus_Automotive_Telemetry_API.Models.Data.Push;
+﻿using Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch;
+using Team_Plus_Automotive_Telemetry_API.Models.Data.Feed;
+using System.Globalization;
+using Team_Plus_Automotive_Telemetry_API.Utility;
 
 namespace Team_Plus_Automotive_Telemetry_API.Infrastructure.File
 {
     public class FileHandler : IFileHandler
     {
-        //private string _filePath = "./Data";
         private int _successCounter = 0;
-        public int Write(PushDataRequest pushData)
+        private readonly string parentFolder = "Data";
+        public int Write(FeedDataRequest feedData)
         {
-            // Construct the file name and path
-            string fileName = $"{pushData.DeviceId}_{pushData.Timestamp}";
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Data");
-            var filePath = Path.Combine(directoryPath, fileName + ".csv");
+            var filePath = GetFilePath(feedData.DeviceId, feedData.Timestamp);
 
-            // Ensure the directory exists
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-
-            if (pushData?.Parameters.Count > 0)
+            if (feedData?.Parameters.Count > 0)
             {
                 // Convert the dictionary to a string in the format "key:value"
-                string line = string.Join(",", pushData.Parameters.Select(kvp => $"{kvp.Key}:{kvp.Value}"));
-                _successCounter = pushData.Parameters.Count;
+                string line = string.Join(",", feedData.Parameters.Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+                _successCounter = feedData.Parameters.Count;
 
-                // Check if the file exists and if it has content
-                if (System.IO.File.Exists(filePath) && new FileInfo(filePath).Length > 0)
-                {
-                    // If the file exists and has content, append a new line followed by the new data
-                    System.IO.File.AppendAllText(filePath, Environment.NewLine + line);
-                }
-                else
-                {
-                    // If the file does not exist or is empty, write the line normally
-                    System.IO.File.AppendAllText(filePath, line);
-                }
+                // If the file exists and has content, append a new line followed by the new data
+                System.IO.File.AppendAllText(filePath, Environment.NewLine + line);
+
             }
+
             return _successCounter;
         }
-
-        public List<string> Read(PullDataRequest request)
+        public List<string> Read(FetchDataRequest fetchData)
         {
             var lines = new List<string>();
-            string fileName = $"{request.DeviceId}_{request.Timestamp}";
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Data");
-            var filePath = Path.Combine(directoryPath, fileName + ".csv");
+            var filePath = GetFilePath(fetchData.DeviceId, fetchData.Timestamp);
 
             if (System.IO.File.Exists(filePath))
             {
@@ -73,6 +56,60 @@ namespace Team_Plus_Automotive_Telemetry_API.Infrastructure.File
             }
 
             return lines;
+        }
+        private string GetFilePath(string deviceId, long TS)
+        {
+            // Define the base date (for example, a fixed epoch date)
+            DateTime baseDate = new DateTime(2024, 1, 1); // Replace with your base date if known
+
+            // Convert milliseconds to TimeSpan
+            TimeSpan timeSpan = TimeSpan.FromMilliseconds(TS);
+
+            // Add TimeSpan to base date
+            DateTime dateTime = baseDate.Add(timeSpan);
+
+            var subFolder = $"{deviceId}/{dateTime.Date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture)}";
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), parentFolder, subFolder);
+            var fileName = $"{dateTime.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
+            var filePath = Path.Combine(directoryPath, fileName + ".csv");
+
+            return filePath;
+        }
+        public void CreateFile(string deviceId, long timeStamp)
+        {
+            string currentDirectory = Directory.GetCurrentDirectory();
+
+            // Create root directory
+            if (!Directory.Exists(Path.Combine(currentDirectory, parentFolder)))
+            {
+                Directory.CreateDirectory(Path.Combine(currentDirectory, parentFolder));
+            }
+
+            var dateTime = TimestampToDatetime.Convert(timeStamp);
+
+            var subFolder = $"{deviceId}/{dateTime.Date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture)}";
+            // Combine paths
+            string subFolderPath = Path.Combine(currentDirectory, parentFolder, subFolder);
+            // Create root directory
+            if (!Directory.Exists(subFolderPath))
+            {
+                Directory.CreateDirectory(subFolderPath);
+            }
+
+            // create file now
+
+            var filePath = Path.Combine(subFolderPath, $"{dateTime.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.csv");
+
+            if (System.IO.File.Exists(filePath))
+            {
+                // do not create file
+            }
+            else
+            {
+                // Create an empty file
+                var line = $"TripStart:{timeStamp}";
+                System.IO.File.AppendAllText(filePath, line);
+            }
         }
     }
 }

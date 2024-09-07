@@ -1,6 +1,6 @@
-﻿namespace Team_Plus_Automotive_Telemetry_API.Models.Data.Pull
+﻿namespace Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch
 {
-    public class PullDataRequest
+    public class FetchDataRequest
     {
         public string DeviceId { get; set; }
         public long Timestamp { get; set; }
