@@ -24,10 +24,10 @@ namespace Team_Plus_Automotive_Telemetry_API.Handlers.Login
             }
             else
             {
-                // update trip end timestamp here
-
-                return string.Empty;
+                _fileHandler.CloseFeed(request.DeviceId, request.TimeStamp);
             }
+
+            return string.Empty;
         }
     }
 }

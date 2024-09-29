@@ -1,0 +1,78 @@
+﻿@model Team_Plus_Automotive_Telemetry_API.Models.Dashboard.DashboardModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    table {
+        width: 100%; /* Full width */
+        border-collapse: collapse; /* Merge borders */
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 2px solid #4CAF50; /* Set border width and color */
+        padding: 10px; /* Padding for cells */
+        text-align: left; /* Align text to the left */
+    }
+
+    th {
+        background-color: #4CAF50; /* Header background color */
+        color: white; /* Header text color */
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2; /* Light grey for even rows */
+    }
+
+    tr:hover {
+        background-color: #ddd; /* Highlight row on hover */
+    }
+
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title> <!-- Add title for the page -->
+</head>
+<body>
+    <h1>Welcome to Team Plus Dashboard</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Parameters != null && Model.Parameters.Count > 0)
+            {
+                foreach (var parameter in Model.Parameters)
+                {
+                    <tr>
+                        <td>@parameter.Code</td>
+                        <td>@parameter.Description</td>
+                        <td>@parameter.Value</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">No data available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

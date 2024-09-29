@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch
+﻿namespace Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch
 {
     public class FetchDataResponse
     {

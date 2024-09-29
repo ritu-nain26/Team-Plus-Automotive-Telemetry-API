@@ -28,7 +28,7 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
                 return BadRequest(new { result = "failed", error = "Missing required parameters" });
             }
 
-            if (!TimestampToDatetime.IsValid(TS))
+            if (!LongExtensions.IsValid(TS))
             {
                 return BadRequest(new { result = "failed", error = "Invalid timestamp" });
             }

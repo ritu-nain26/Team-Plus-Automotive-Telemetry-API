@@ -10,6 +10,10 @@ using Team_Plus_Automotive_Telemetry_API.Models.Notify;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+// This registers services needed for both API controllers and MVC controllers with views
+builder.Services.AddControllersWithViews();  // Use this instead of just AddControllers()
+
 // Call the method to configure services
 ConfigureServices(builder.Services);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,6 +33,8 @@ builder.Logging.ClearProviders(); // Clear other loggers
 builder.Logging.AddSerilog();     // Add Serilog to the pipeline
 
 var app = builder.Build();
+app.UseHsts();
+app.UseStaticFiles(); 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -41,6 +47,18 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Configure routing
+app.MapControllerRoute(
+    name: "dashboard",
+    pattern: "dashboard",
+    defaults: new { controller = "Dashboard", action = "Index" }
+);
+
+// Map Default MVC Route
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 

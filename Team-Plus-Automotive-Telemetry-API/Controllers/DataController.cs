@@ -3,6 +3,7 @@ using Team_Plus_Automotive_Telemetry_API.Handlers;
 using Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch;
 using Team_Plus_Automotive_Telemetry_API.Models.Data.Feed;
 using Team_Plus_Automotive_Telemetry_API.Utility;
+using Team_Plus_Automotive_Telemetry_API.Models.Common;
 
 namespace Team_Plus_Automotive_Telemetry_API.Controllers
 {
@@ -25,23 +26,33 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
 
         // GET: api/post/{deviceId}
         [HttpPost("post")]
-        public IActionResult FeedData([FromQuery] string deviceId, [FromQuery] long TS, [FromBody] Dictionary<string, string> queryParams)
+        public IActionResult FeedData([FromQuery] string deviceId, [FromQuery] long TS, [FromBody] FeedDataBody feedDataBody)
         {
             if (string.IsNullOrEmpty(deviceId))
             {
                 return BadRequest(new { result = "failed", error = "deviceId is required" });
             }
 
-            if (!TimestampToDatetime.IsValid(TS))
+            if (string.IsNullOrEmpty(feedDataBody.FeedId))
+            {
+                return BadRequest(new { result = "failed", error = "FeedId is required" });
+            }
+
+            if (!LongExtensions.IsValid(TS))
             {
                 return BadRequest(new { result = "failed", error = "Invalid timestamp" });
+            }
+
+            if (!EncryptionUtility.ValidateEncryptedNumber(WhiteListVehicleIdentificationNumber.Get().FirstOrDefault(), feedDataBody.FeedId))
+            {
+                return BadRequest(new { result = "failed", error = "Invalid FeedId" });
             }
 
             var request = new FeedDataRequest
             {
                 DeviceId = deviceId,
                 Timestamp = TS,
-                Parameters = queryParams
+                Parameters = feedDataBody.QueryParams
             };
 
             return Ok(_feedDataHandler.Handle(request));

@@ -8,5 +8,6 @@ namespace Team_Plus_Automotive_Telemetry_API.Infrastructure.File
         public void CreateFile(string deviceId, long timeStamp);
         public int Write(FeedDataRequest pushData);
         public List<string> Read(FetchDataRequest request);
+        public void CloseFeed(string deviceId, long timeStamp);
     }
 }
