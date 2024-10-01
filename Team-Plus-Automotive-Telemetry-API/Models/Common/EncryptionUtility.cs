@@ -5,9 +5,9 @@ namespace Team_Plus_Automotive_Telemetry_API.Models.Common
 {
     public class EncryptionUtility
     {
-        public static string GenerateEncryptedNumber(string VINNumber)
+        public static string GenerateEncryptedNumber(EncryptionUtilityRequest request)
         {
-            string combinedInput = VINNumber + SecretKeyProvider.Key;
+            string combinedInput = request.VIN + request.DeviceId;
 
             // Generate a SHA256 hash
             using (SHA256 sha256 = SHA256.Create())
@@ -24,10 +24,10 @@ namespace Team_Plus_Automotive_Telemetry_API.Models.Common
                 return sb.ToString();
             }
         }
-        public static bool ValidateEncryptedNumber(string input, string encryptedNumberToValidate)
+        public static bool ValidateEncryptedNumber(EncryptionUtilityRequest request, string encryptedNumberToValidate)
         {
             // Regenerate the encrypted number from the input
-            string generatedEncryptedNumber = EncryptionUtility.GenerateEncryptedNumber(input);
+            string generatedEncryptedNumber = EncryptionUtility.GenerateEncryptedNumber(request);
 
             // Compare the generated number with the one provided
             return generatedEncryptedNumber.Equals(encryptedNumberToValidate, StringComparison.OrdinalIgnoreCase);

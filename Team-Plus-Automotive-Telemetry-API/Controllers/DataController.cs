@@ -43,7 +43,13 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
                 return BadRequest(new { result = "failed", error = "Invalid timestamp" });
             }
 
-            if (!EncryptionUtility.ValidateEncryptedNumber(WhiteListVehicleIdentificationNumber.Get().FirstOrDefault(), feedDataBody.FeedId))
+            if (!EncryptionUtility.ValidateEncryptedNumber(
+                new EncryptionUtilityRequest
+                {
+                    DeviceId = deviceId,
+                    VIN = WhiteListVehicleIdentificationNumber.Id
+                },
+                feedDataBody.FeedId))
             {
                 return BadRequest(new { result = "failed", error = "Invalid FeedId" });
             }

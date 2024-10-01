@@ -2,12 +2,6 @@
 {
     public class WhiteListVehicleIdentificationNumber
     {
-        public static List<string> Get()
-        {
-            return new List<string>
-            {
-                "B9EDBFEB"
-            };
-        }
+        public static readonly string Id = "B9EDBFEB";
     }
 }

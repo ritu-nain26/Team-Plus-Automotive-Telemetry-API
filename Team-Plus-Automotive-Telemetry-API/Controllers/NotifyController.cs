@@ -33,7 +33,7 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
                 return BadRequest(new { result = "failed", error = "Invalid timestamp" });
             }
 
-            if (!WhiteListVehicleIdentificationNumber.Get().Contains(VIN))
+            if (!WhiteListVehicleIdentificationNumber.Id.Equals(VIN))
             {
                 return BadRequest(new { result = "failed", error = "Invalid VIN key" });
             }
