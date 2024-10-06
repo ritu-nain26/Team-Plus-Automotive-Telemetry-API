@@ -1,4 +1,4 @@
-﻿@model Team_Plus_Automotive_Telemetry_API.Models.Dashboard.DashboardModel
+﻿@model Team_Plus_Automotive_Telemetry_API.Models.Data.Fetch.FetchDataResponse
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -44,35 +44,62 @@
     <title>@ViewData["Title"]</title> <!-- Add title for the page -->
 </head>
 <body>
-    <h1>Welcome to Team Plus Dashboard</h1>
+    <div>
+        <h3>Stats</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Server timestamp (in ms)</td>
+                    <td>@Model.Stats.Tick</td>
+                </tr>
+                <tr>
+                    <td>Device timestamp (in ms)</td>
+                    <td>@Model.Stats.DevTick</td>
+                </tr>
+                <tr>
+                    <td>Trip/session runtime</td>
+                    <td>@Model.Stats.Elapsed</td>
+                </tr>
+                <tr>
+                    <td>Trip Ended</td>
+                    <td>@(Model.Stats.Parked == 1 ? "No" : "Yes")</td>
+                </tr>
+                <tr>
+                    <td>Time (in ms) elapsed since last data transmission</td>
+                    <td>@Model.Stats.Age?.Data</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Description</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Parameters != null && Model.Parameters.Count > 0)
-            {
-                foreach (var parameter in Model.Parameters)
+    <div>
+        <h3>Data</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>PID</th>
+                    <th>Value</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Data)
                 {
                     <tr>
-                        <td>@parameter.Code</td>
-                        <td>@parameter.Description</td>
-                        <td>@parameter.Value</td>
+                        @foreach (var cell in row)
+                        {
+                            <td>@cell</td>
+                        }
                     </tr>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="2">No data available.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

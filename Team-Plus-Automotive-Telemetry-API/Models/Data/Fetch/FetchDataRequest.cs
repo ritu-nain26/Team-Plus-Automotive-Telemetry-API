@@ -3,6 +3,6 @@
     public class FetchDataRequest
     {
         public string DeviceId { get; set; }
-        public long Timestamp { get; set; }
+        public long? Timestamp { get; set; }
     }
 }

@@ -23,13 +23,13 @@ namespace Team_Plus_Automotive_Telemetry_API.Handlers.Login
                     });
 
                 // create file here
-                _fileHandler.CreateFile(request.DeviceId, request.TimeStamp);
+                _fileHandler.CreateFile(request.DeviceId, request.TS);
 
                 return feedId;
             }
             else
             {
-                _fileHandler.CloseFeed(request.DeviceId, request.TimeStamp);
+                _fileHandler.CloseFeed(request.DeviceId, request.TS);
             }
 
             return string.Empty;

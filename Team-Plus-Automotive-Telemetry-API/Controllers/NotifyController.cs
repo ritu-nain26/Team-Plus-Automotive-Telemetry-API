@@ -18,7 +18,6 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
             _loginHandler = loginHandler;
         }
 
-        // GET: api/notify/{deviceId}?EV={eventId}&TS={timestamp}&VIN={vin}
         [HttpGet("notify/{deviceId}")]
         public IActionResult Notify(string deviceId, [FromQuery] EventEnum EV, [FromQuery] long TS, [FromQuery] string VIN)
         {
@@ -44,7 +43,7 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
             {
                 VIN = VIN,
                 DeviceId = deviceId,
-                TimeStamp = TS,
+                TS = TS,
                 Event = EV,
             };
 

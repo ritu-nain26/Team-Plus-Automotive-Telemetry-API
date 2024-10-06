@@ -27,38 +27,7 @@ namespace Team_Plus_Automotive_Telemetry_API.Controllers
 
             var data = _fetchDataHandler.Handle(request);
 
-            foreach (var item in data.DataFeed)
-            {
-                // Split the item by comma
-                var splitItems = item.Split(',');
-
-                // Display each split item
-                foreach (var splitItem in splitItems)
-                {
-                    feed.Add(splitItem);
-                }
-            }
-
-            var model = new DashboardModel
-            {
-                Parameters = new List<VehicleParameter>()
-            };
-
-            foreach (var feedItem in feed)
-            {
-                var parts = feedItem.Split(':');
-                if (parts.Length == 2 && VehicleParameterMapping.Map.ContainsKey(parts[0].Trim()))
-                {
-                    model.Parameters.Add(new VehicleParameter
-                    {
-                        Code = parts[0].Trim(),
-                        Description = VehicleParameterMapping.Map[parts[0].Trim()],
-                        Value = parts[1].Trim()
-                    });
-                }
-            }
-
-            return View("~/Views/Dashboard.cshtml", model);
+            return View("~/Views/Dashboard.cshtml", data);
         }
     }
 }

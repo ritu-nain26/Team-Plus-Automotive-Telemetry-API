@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Data\TD0B131532\2024\01\02\" />
     <Folder Include="logs\" />
   </ItemGroup>
 

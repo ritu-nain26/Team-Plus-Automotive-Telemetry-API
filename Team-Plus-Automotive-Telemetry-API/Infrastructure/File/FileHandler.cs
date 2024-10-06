@@ -17,7 +17,8 @@ namespace Team_Plus_Automotive_Telemetry_API.Infrastructure.File
             if (feedData?.Parameters.Count > 0)
             {
                 // Convert the dictionary to a string in the format "key:value"
-                string line = string.Join(",", feedData.Parameters.Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+                string line = string.Join(",", feedData.Parameters.Select(kvp => $"{kvp.Key}:{kvp.Value}")) + $",10:{feedData.Timestamp}";
+
                 _successCounter = feedData.Parameters.Count;
 
                 // If the file exists and has content, append a new line followed by the new data
@@ -30,7 +31,7 @@ namespace Team_Plus_Automotive_Telemetry_API.Infrastructure.File
         public List<string> Read(FetchDataRequest fetchData)
         {
             var lines = new List<string>();
-            var filePath = GetFilePath(fetchData.DeviceId, fetchData.Timestamp);
+            var filePath = GetFilePath(fetchData.DeviceId, fetchData.Timestamp.Value);
 
             if (System.IO.File.Exists(filePath))
             {
@@ -153,14 +154,8 @@ namespace Team_Plus_Automotive_Telemetry_API.Infrastructure.File
         }
         private string GetFilePath(string deviceId, long TS)
         {
-            // Define the base date (for example, a fixed epoch date)
-            DateTime baseDate = new DateTime(2024, 1, 1); // Replace with your base date if known
-
-            // Convert milliseconds to TimeSpan
-            TimeSpan timeSpan = TimeSpan.FromMilliseconds(TS);
-
             // Add TimeSpan to base date
-            DateTime dateTime = baseDate.Add(timeSpan);
+            DateTime dateTime = TS.ToDateTime();
 
             var subFolder = $"{deviceId}/{dateTime.Date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture)}";
             var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), parentFolder, subFolder);

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Team-Plus-Automotive-Telemetry-API", "Team-Plus-Automotive-Telemetry-API.csproj", "{EA18DF00-E493-42A4-ACE5-54E62E65A8D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Team-Plus-Automotive-Telemetry-API", "Team-Plus-Automotive-Telemetry-API.csproj", "{EA18DF00-E493-42A4-ACE5-54E62E65A8D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Team-Plus-Automotive-Telemetry-API.Tests", "..\Team-Plus-Automotive-Telemetry-API.Tests\Team-Plus-Automotive-Telemetry-API.Tests.csproj", "{4D34693D-4834-484B-BA5E-74A2BB977DBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{EA18DF00-E493-42A4-ACE5-54E62E65A8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA18DF00-E493-42A4-ACE5-54E62E65A8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA18DF00-E493-42A4-ACE5-54E62E65A8D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D34693D-4834-484B-BA5E-74A2BB977DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D34693D-4834-484B-BA5E-74A2BB977DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D34693D-4834-484B-BA5E-74A2BB977DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D34693D-4834-484B-BA5E-74A2BB977DBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

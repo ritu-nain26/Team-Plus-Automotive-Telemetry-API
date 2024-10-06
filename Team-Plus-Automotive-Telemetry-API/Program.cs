@@ -10,6 +10,16 @@ using Team_Plus_Automotive_Telemetry_API.Models.Notify;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel to listen only on HTTP and HTTPS
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5211); // HTTP
+    serverOptions.ListenAnyIP(5210, listenOptions =>
+    {
+        listenOptions.UseHttps(); // HTTPS
+    });
+});
+
 // Add services to the container.
 // This registers services needed for both API controllers and MVC controllers with views
 builder.Services.AddControllersWithViews();  // Use this instead of just AddControllers()

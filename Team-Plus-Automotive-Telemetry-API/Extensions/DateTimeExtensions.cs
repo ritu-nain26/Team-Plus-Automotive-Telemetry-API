@@ -7,8 +7,11 @@
             // Ensure the DateTime is in UTC
             DateTime utcDateTime = dateTime.ToUniversalTime();
 
-            // Calculate the Unix timestamp (in seconds)
-            long unixTimestamp = (long)(utcDateTime - new DateTime(2024, 1, 1)).TotalSeconds;
+            // Define the reference date (2024-01-01)
+            DateTime referenceDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            // Calculate the Unix timestamp in milliseconds
+            long unixTimestamp = (long)(utcDateTime - referenceDate).TotalMilliseconds;
 
             return unixTimestamp;
         }
